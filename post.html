@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Post</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a href="index.html">← Back to Home</a>
+
+    <div id="post"></div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const postId = Number(params.get("id"));
+
+        fetch("posts.json")
+            .then(r => r.json())
+            .then(data => {
+                const post = data.posts.find(
+                    p => p.postNum === postId
+                );
+
+                if (!post) {
+                    document.getElementById("post").innerHTML =
+                        "<h1>Post not found</h1>";
+                    return;
+                }
+
+                document.title = post.title;
+
+                document.getElementById("post").innerHTML = `
+                    <h1>${post.title}</h1>
+                    <h3>${post.subheading}</h3>
+                    <p><em>${post.datePosted}</em></p>
+                    ${post.content}
+                `;
+            });
+    </script>
+</body>
+</html>

@@ -1,1 +1,46 @@
-Test
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>PCT Blog</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>GR11 posts</h1>
+
+    <div id="posts"></div>
+
+    <script>
+        fetch("posts.json")
+            .then(r => r.json())
+            .then(data => {
+                const container = document.getElementById("posts");
+
+                data.posts.reverse().forEach(post => {
+
+                    if (post.postNum === 19) {
+                        newHeading = document.createElement("h1");
+                        newHeading.textContent = "PCT posts";
+                        container.appendChild(newHeading);
+                    }
+
+                    const div = document.createElement("div");
+
+                    div.innerHTML = `
+                        <h2>
+                            <a href="post.html?id=${post.postNum}">
+                                ${post.title}
+                            </a>
+                        </h2>
+                        <p>${post.subheading}</p>
+                        <small>${post.datePosted}</small>
+                        <hr>
+                    `;
+
+                    container.appendChild(div);
+                
+                });
+            });
+    </script>
+</body>
+</html>
