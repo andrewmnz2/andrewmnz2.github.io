@@ -8,6 +8,15 @@
       "content": "Test content",
       "numImages": 0,
       "mainImage": 0
+    },
+    {
+      "postNum": 2,
+      "title": "Test2",
+      "subheading": "Test post2",
+      "datePosted": "2024-05-05",
+      "content": "Test content2",
+      "numImages": 0,
+      "mainImage": 0
     }
   ]
 }
