@@ -1,46 +1,159 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Andrew's site</title>
-    <link rel="stylesheet" href="style.css">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
+    <title>Andrew's Site</title>
+
+    <style>
+        body {
+            background: #ffffff;
+        }
+
+        .post-card {
+            transition: transform 0.2s ease;
+            border: none;
+            overflow: hidden;
+        }
+
+        .post-card:hover {
+            transform: scale(1.02);
+        }
+
+        .post-link {
+            text-decoration: none;
+        }
+
+        .post-image {
+            position: relative;
+            aspect-ratio: 1 / 1;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .post-image::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                rgba(0, 0, 0, 0.2),
+                rgba(0, 0, 0, 0.7)
+            );
+        }
+
+        .post-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 15px;
+            text-align: center;
+            z-index: 2;
+            color: white;
+        }
+
+        .post-content h3 {
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .post-content p {
+            margin-bottom: 5px;
+            color: white;
+        }
+    </style>
+
 </head>
 <body>
-    <h1>GR11 posts</h1>
 
-    <div id="posts"></div>
+<div class="container-fluid py-4">
 
-    <script>
-        fetch("posts.json")
-            .then(r => r.json())
-            .then(data => {
-                const container = document.getElementById("posts");
+    <div class="row mb-3">
+        <div class="col-12">
+            <h1 class="display-4" style="text-align: center; color:black; padding-top: 100px; padding-bottom: 100px;">GR11 Posts</h1>
+        </div>
+    </div>
 
-                data.posts.reverse().forEach(post => {
+    <div class="row" id="gr11-posts"></div>
 
-                    if (post.postNum === 19) {
-                        newHeading = document.createElement("h1");
-                        newHeading.textContent = "PCT posts";
-                        container.appendChild(newHeading);
-                    }
+    <div class="row mt-5 mb-3">
+        <div class="col-12">
+            <h1 class="display-4" style="text-align: center; color:black; padding-top: 100px; padding-bottom: 100px;">PCT Posts</h1>
+        </div>
+    </div>
 
-                    const div = document.createElement("div");
+    <div class="row" id="pct-posts"></div>
 
-                    div.innerHTML = `
-                        <h2>
-                            <a href="post.html?id=${post.postNum}">
-                                ${post.title}
-                            </a>
-                        </h2>
-                        <p>${post.subheading}</p>
-                        <small>${post.datePosted}</small>
-                        <hr>
-                    `;
+</div>
 
-                    container.appendChild(div);
-                
-                });
-            });
-    </script>
+<script>
+
+function renderPosts(posts, containerId, folder) {
+
+    const container = document.getElementById(containerId);
+
+    posts.reverse().forEach(post => {
+
+        const col = document.createElement("div");
+        col.classList.add("col-12", "col-lg-4", "mb-4");
+
+        col.innerHTML = `
+            <a href="post.html?type=${folder}&id=${post.postNum}"
+               class="post-link">
+
+                <div class="card post-card">
+
+                    <div class="post-image"
+                         style="background-image: url('posts/${folder}/img/${post.postNum}/${post.mainImage}.jpg');">
+
+                        <div class="post-content">
+
+                            <h3>${post.title}</h3>
+
+                            <p>
+                                <i>${post.subheading}</i>
+                            </p>
+
+                            <p>
+                                Posted on ${post.datePosted}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </a>
+        `;
+
+        container.appendChild(col);
+
+    });
+
+}
+
+Promise.all([
+    fetch("posts/gr11/posts.json?v=" + Date.now()).then(r => r.json()),
+    fetch("posts/pct/posts.json?v=" + Date.now()).then(r => r.json())
+])
+.then(([gr11Data, pctData]) => {
+
+    renderPosts(gr11Data.posts, "gr11-posts", "gr11");
+    renderPosts(pctData.posts, "pct-posts", "pct");
+
+})
+.catch(err => console.error(err));
+
+</script>
+
 </body>
 </html>
